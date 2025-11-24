@@ -2,8 +2,11 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veus de Ciutat - Valencia</title>
+    <title>Veus de Ciutat - Valencia (v4.0)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -14,18 +17,18 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .hidden-section { display: none; }
         .card-hover:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .hero-bg { background: linear-gradient(135deg, #0f172a 0%, #334155 100%); }
+        
+        /* CAMBIO VISUAL: Fondo naranja para saber si se actualizó */
+        .hero-bg { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); }
+        
         .loader {
-            border: 4px solid #f3f3f3; border-top: 4px solid #f97316;
+            border: 4px solid #f3f3f3; border-top: 4px solid #ffffff;
             border-radius: 50%; width: 30px; height: 30px;
             animation: spin 1s linear infinite; display: inline-block;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
-        /* Animación de ondas de audio */
-        .audio-wave {
-            display: flex; align-items: center; justify-content: center; height: 20px; gap: 3px;
-        }
+        .audio-wave { display: flex; align-items: center; justify-content: center; height: 20px; gap: 3px; }
         .audio-bar { width: 4px; background: #f97316; animation: audio-wave 1s ease-in-out infinite; }
         .audio-bar:nth-child(2) { animation-delay: 0.1s; }
         .audio-bar:nth-child(3) { animation-delay: 0.2s; }
@@ -36,10 +39,11 @@
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
 
+    <!-- CABECERA NARANJA (Si la ves naranja, está actualizado) -->
     <header class="hero-bg text-white p-6 shadow-lg sticky top-0 z-50">
         <div class="container mx-auto flex justify-between items-center">
             <h1 class="text-2xl font-bold tracking-wider cursor-pointer" onclick="navigate('home')">VEUS DE CIUTAT</h1>
-            <nav><button onclick="navigate('home')" class="text-sm font-semibold hover:text-orange-400 transition">INICIO</button></nav>
+            <nav><button onclick="navigate('home')" class="text-sm font-semibold hover:text-white/80 transition bg-white/20 px-3 py-1 rounded-full">INICIO</button></nav>
         </div>
     </header>
 
@@ -55,7 +59,6 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-2xl">
                 <button onclick="navigate('pois')" class="group relative overflow-hidden rounded-2xl h-48 shadow-xl transition-all hover:scale-105">
                     <div class="absolute inset-0 bg-orange-500 opacity-90 group-hover:bg-orange-600 transition"></div>
-                    <!-- FOTOS: Usamos tus fotos locales, si fallan usa placeholder -->
                     <img src="img/torres.jpg" class="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-50" alt="Valencia" onerror="this.src='https://placehold.co/600x400?text=Valencia'">
                     <div class="relative z-10 flex flex-col items-center justify-center h-full text-white">
                         <i data-lucide="map-pin" class="w-10 h-10 mb-2"></i>
@@ -134,8 +137,8 @@
 
     </main>
 
-    <!-- VERSIÓN v3.0 BLINDADA -->
-    <footer class="bg-slate-900 text-slate-400 py-6 mt-auto text-center text-sm"><p>&copy; 2024 Veus de Ciutat (v3.0) - Powered by Gemini.</p></footer>
+    <!-- PIE DE PÁGINA CON VERSIÓN v4.0 -->
+    <footer class="bg-slate-900 text-slate-400 py-6 mt-auto text-center text-sm"><p>&copy; 2024 Veus de Ciutat (v4.0) - Powered by Gemini.</p></footer>
 
     <script>
         // --- CLAVE API ---
@@ -144,7 +147,6 @@
 
         lucide.createIcons();
 
-        // DATOS DE LOS SITIOS
         const placesData = [
             { id: 'torres', title: 'Torres de Serranos', image: 'img/torres.jpg', desc: 'Antigua puerta de la muralla medieval.' },
             { id: 'oceanografic', title: 'L\'Oceanogràfic', image: 'img/oceanografic.jpg', desc: 'El mayor acuario de Europa.' },
@@ -154,7 +156,6 @@
             { id: 'albufera', title: 'Parque Natural de la Albufera', image: 'img/albufera.jpg', desc: 'Naturaleza y origen de la paella.' }
         ];
 
-        // TEXTOS DE EMERGENCIA (Backup)
         const backupContent = {
             'torres': "Las Torres de Serranos son una de las dos puertas fortificadas de la muralla medieval de Valencia que aún permanecen en pie. Fueron construidas por Pere Balaguer entre 1392 y 1398. Es un magnífico exponente de la arquitectura gótica.",
             'oceanografic': "El Oceanogràfic de Valencia es el mayor acuario de Europa. Situado en el complejo vanguardista de la Ciudad de las Artes y las Ciencias, este lugar reproduce fielmente los ecosistemas marinos más importantes.",
@@ -167,39 +168,29 @@
         let currentPlace = null;
         let speechSynth = window.speechSynthesis;
 
-        // --- SISTEMA DE MODELOS DE RESPALDO (La clave del éxito) ---
-        // Si falla uno, probamos el siguiente de la lista
+        // PRIORIZAMOS "gemini-pro" QUE ES MÁS COMPATIBLE
         const MODELS_TO_TRY = [
-            "gemini-1.5-flash",
-            "gemini-1.5-flash-001",
             "gemini-pro",
+            "gemini-1.5-flash",
             "gemini-1.0-pro"
         ];
 
-        // FUNCIÓN MAESTRA PARA LLAMAR A LA API CON REINTENTOS
         async function fetchWithFallback(promptText) {
             for (const model of MODELS_TO_TRY) {
                 try {
-                    console.log(`Intentando conectar con modelo: ${model}...`);
                     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
                     });
-
                     if (response.ok) {
                         const data = await response.json();
                         return data.candidates[0].content.parts[0].text;
-                    } else {
-                        console.warn(`Fallo con ${model}:`, response.status);
                     }
-                } catch (e) {
-                    console.warn(`Error de red con ${model}:`, e);
-                }
+                } catch (e) { console.warn(e); }
             }
             throw new Error("Todos los modelos fallaron");
         }
-
 
         function navigate(sectionId) {
             if(speechSynth.speaking) speechSynth.cancel();
@@ -273,8 +264,6 @@
             lucide.createIcons();
         }
 
-        // --- FUNCIONES BLINDADAS ---
-
         async function startAudioGuide(placeName) {
             const loading = document.getElementById('audio-loading');
             const controls = document.getElementById('audio-controls');
@@ -288,13 +277,11 @@
             let textToRead = "";
 
             try {
-                // Usamos la función maestra con reintentos
                 const prompt = `Escribe un párrafo audioguía muy breve sobre "${placeName}" en Valencia. 40 palabras. Tono amigable.`;
                 textToRead = await fetchWithFallback(prompt);
 
             } catch (error) {
                 console.log("Fallo total de IA, usando respaldo local.");
-                // PLAN B: Usar texto predefinido
                 textToRead = backupContent[currentPlace.id] || "Lo sentimos, no hay información disponible en este momento.";
                 errDiv.innerText = "Modo Offline: Usando guía guardada por problemas de conexión.";
                 errDiv.classList.remove('hidden');
@@ -312,30 +299,19 @@
             const loading = document.getElementById('text-loading');
             const resultDiv = document.getElementById('text-result');
             const btn = document.querySelector('#media-content button'); 
-            
             loading.classList.remove('hidden'); resultDiv.classList.add('hidden'); if(btn) btn.classList.add('hidden');
 
             try {
-                // Usamos la función maestra con reintentos
                 const prompt = `Guía turística breve sobre "${placeName}" en Valencia. HTML simple con <h3> y <p>.`;
                 const text = await fetchWithFallback(prompt);
-                
                 const cleanText = text.replace(/```html/g, '').replace(/```/g, '');
                 resultDiv.innerHTML = cleanText; 
-
             } catch (error) { 
                 console.error("Fallo total:", error);
-                // PLAN B: Mostrar respaldo
                 let backupText = backupContent[currentPlace.id] || "Información no disponible.";
-                resultDiv.innerHTML = `
-                    <div class="bg-amber-50 p-4 rounded-lg border border-amber-200 mb-4 text-sm text-amber-800">
-                        ⚠️ <strong>Modo Offline:</strong> No pudimos conectar con la IA. Mostrando información guardada.
-                    </div>
-                    <p>${backupText}</p>
-                `;
+                resultDiv.innerHTML = `<div class="bg-amber-50 p-4 rounded-lg border border-amber-200 mb-4 text-sm text-amber-800">⚠️ <strong>Modo Offline:</strong> No pudimos conectar con la IA. Mostrando información guardada.</div><p>${backupText}</p>`;
             } finally { 
-                loading.classList.add('hidden'); 
-                resultDiv.classList.remove('hidden'); 
+                loading.classList.add('hidden'); resultDiv.classList.remove('hidden'); 
             }
         }
     </script>
