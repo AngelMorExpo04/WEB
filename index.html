@@ -6,7 +6,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veus de Ciutat - Valencia (v4.0)</title>
+    <title>Veus de Ciutat - Valencia (v5.0)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -18,7 +18,7 @@
         .hidden-section { display: none; }
         .card-hover:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
         
-        /* CAMBIO VISUAL: Fondo naranja para saber si se actualizó */
+        /* CABECERA NARANJA */
         .hero-bg { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); }
         
         .loader {
@@ -39,7 +39,6 @@
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
 
-    <!-- CABECERA NARANJA (Si la ves naranja, está actualizado) -->
     <header class="hero-bg text-white p-6 shadow-lg sticky top-0 z-50">
         <div class="container mx-auto flex justify-between items-center">
             <h1 class="text-2xl font-bold tracking-wider cursor-pointer" onclick="navigate('home')">VEUS DE CIUTAT</h1>
@@ -112,11 +111,11 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div onclick="showMedia('audio')" class="cursor-pointer bg-white p-6 rounded-xl shadow-md border border-slate-100 hover:border-orange-400 hover:bg-orange-50 transition flex flex-col items-center gap-3">
                         <div class="bg-orange-100 p-3 rounded-full text-orange-600"><i data-lucide="headphones" class="w-6 h-6"></i></div>
-                        <span class="font-bold text-slate-700">Audios IA ✨</span>
+                        <span class="font-bold text-slate-700">Audios IA</span>
                     </div>
                     <div onclick="showMedia('text')" class="cursor-pointer bg-white p-6 rounded-xl shadow-md border border-slate-100 hover:border-purple-400 hover:bg-purple-50 transition flex flex-col items-center gap-3">
                         <div class="bg-purple-100 p-3 rounded-full text-purple-600"><i data-lucide="file-text" class="w-6 h-6"></i></div>
-                        <span class="font-bold text-slate-700">Guía IA ✨</span>
+                        <span class="font-bold text-slate-700">Guía IA</span>
                     </div>
                     <div onclick="showMedia('video')" class="cursor-pointer bg-white p-6 rounded-xl shadow-md border border-slate-100 hover:border-blue-400 hover:bg-blue-50 transition flex flex-col items-center gap-3">
                         <div class="bg-blue-100 p-3 rounded-full text-blue-600"><i data-lucide="video" class="w-6 h-6"></i></div>
@@ -129,7 +128,11 @@
                 </div>
 
                 <div id="media-display-area" class="mt-8 p-6 bg-white rounded-xl shadow-inner border border-slate-200 hidden min-h-[150px]">
-                    <h3 id="media-title" class="text-xl font-bold mb-4 border-b pb-2">Contenido</h3>
+                    <h3 id="media-title" class="text-xl font-bold mb-4 border-b pb-2 flex justify-between items-center">
+                        <span>Contenido</span>
+                        <!-- Etiqueta de estado invisible por defecto -->
+                        <span id="status-badge" class="text-xs font-normal px-2 py-1 bg-gray-100 rounded-full text-gray-500 hidden"></span>
+                    </h3>
                     <div id="media-content" class="text-slate-600"></div>
                 </div>
             </div>
@@ -137,8 +140,7 @@
 
     </main>
 
-    <!-- PIE DE PÁGINA CON VERSIÓN v4.0 -->
-    <footer class="bg-slate-900 text-slate-400 py-6 mt-auto text-center text-sm"><p>&copy; 2024 Veus de Ciutat (v4.0) - Powered by Gemini.</p></footer>
+    <footer class="bg-slate-900 text-slate-400 py-6 mt-auto text-center text-sm"><p>&copy; 2024 Veus de Ciutat (v5.0)</p></footer>
 
     <script>
         // --- CLAVE API ---
@@ -156,24 +158,21 @@
             { id: 'albufera', title: 'Parque Natural de la Albufera', image: 'img/albufera.jpg', desc: 'Naturaleza y origen de la paella.' }
         ];
 
+        // TEXTOS OFFLINE (Siempre disponibles)
         const backupContent = {
-            'torres': "Las Torres de Serranos son una de las dos puertas fortificadas de la muralla medieval de Valencia que aún permanecen en pie. Fueron construidas por Pere Balaguer entre 1392 y 1398. Es un magnífico exponente de la arquitectura gótica.",
-            'oceanografic': "El Oceanogràfic de Valencia es el mayor acuario de Europa. Situado en el complejo vanguardista de la Ciudad de las Artes y las Ciencias, este lugar reproduce fielmente los ecosistemas marinos más importantes.",
-            'mercado': "El Mercado Central de Valencia es una obra maestra del modernismo. Con su cúpula, vidrieras y mosaicos, es uno de los mercados de productos frescos más grandes y bonitos de Europa.",
-            'lonja': "La Lonja de la Seda es una obra maestra del gótico civil valenciano declarada Patrimonio de la Humanidad por la UNESCO. Su Sala de Contratación con columnas helicoidales es impresionante.",
-            'catedral': "La Catedral de Valencia combina estilos románico, gótico y barroco. Es famosa por albergar el Santo Cáliz y por su torre campanario, el Miguelete, desde donde se ve toda la ciudad.",
-            'albufera': "El Parque Natural de la Albufera es un ecosistema único y el hogar de miles de aves. Es el lugar de origen de la paella valenciana y ofrece atardeceres espectaculares."
+            'torres': "Las Torres de Serranos son una de las dos puertas fortificadas de la muralla medieval de Valencia que aún permanecen en pie. Fueron construidas por Pere Balaguer entre 1392 y 1398 en estilo gótico valenciano.",
+            'oceanografic': "El Oceanogràfic de Valencia es el mayor acuario de Europa. Situado en la Ciudad de las Artes y las Ciencias, representa los principales ecosistemas marinos del planeta.",
+            'mercado': "El Mercado Central de Valencia es una obra maestra del modernismo. Con su espectacular cúpula y vidrieras, es uno de los mercados de productos frescos más bonitos del mundo.",
+            'lonja': "La Lonja de la Seda es Patrimonio de la Humanidad por la UNESCO. Es una obra maestra del gótico civil, famosa por su Sala de Contratación y sus columnas helicoidales.",
+            'catedral': "La Catedral de Valencia, construida sobre una antigua mezquita, combina estilos románico, gótico y barroco. Es el hogar del Santo Cáliz y de la famosa torre del Miguelete.",
+            'albufera': "El Parque Natural de la Albufera es un humedal costero de gran valor ecológico. Es el lugar de nacimiento de la paella y ofrece paseos en barca inolvidables al atardecer."
         };
 
         let currentPlace = null;
         let speechSynth = window.speechSynthesis;
 
-        // PRIORIZAMOS "gemini-pro" QUE ES MÁS COMPATIBLE
-        const MODELS_TO_TRY = [
-            "gemini-pro",
-            "gemini-1.5-flash",
-            "gemini-1.0-pro"
-        ];
+        // Modelos a probar
+        const MODELS_TO_TRY = ["gemini-pro", "gemini-1.5-flash", "gemini-1.0-pro"];
 
         async function fetchWithFallback(promptText) {
             for (const model of MODELS_TO_TRY) {
@@ -187,9 +186,9 @@
                         const data = await response.json();
                         return data.candidates[0].content.parts[0].text;
                     }
-                } catch (e) { console.warn(e); }
+                } catch (e) { }
             }
-            throw new Error("Todos los modelos fallaron");
+            throw new Error("Fail");
         }
 
         function navigate(sectionId) {
@@ -226,65 +225,73 @@
 
         function showMedia(type) {
             const displayArea = document.getElementById('media-display-area');
-            const titleEl = document.getElementById('media-title');
+            const titleEl = document.getElementById('media-title').querySelector('span');
             const contentEl = document.getElementById('media-content');
+            const badge = document.getElementById('status-badge');
+            
             if(type !== 'audio' && speechSynth.speaking) speechSynth.cancel();
-            displayArea.classList.remove('hidden'); displayArea.classList.add('fade-in'); contentEl.innerHTML = ''; 
+            displayArea.classList.remove('hidden'); displayArea.classList.add('fade-in'); contentEl.innerHTML = ''; badge.classList.add('hidden');
             const safeTitle = currentPlace.title.replace(/'/g, "\\'");
 
             switch(type) {
                 case 'audio':
-                    titleEl.innerHTML = `Audioguía IA ✨`;
+                    titleEl.innerText = `Audioguía`;
                     contentEl.innerHTML = `
                         <div class="flex flex-col items-center justify-center p-4 text-center">
                             <p class="mb-4 text-slate-600">Escucha la narración sobre ${currentPlace.title}.</p>
-                            <button onclick="startAudioGuide('${safeTitle}')" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-full flex items-center gap-2 transition shadow-lg"><i data-lucide="play" class="w-5 h-5"></i> <span>Escuchar Guía</span></button>
-                            <div id="audio-loading" class="hidden mt-6 flex flex-col items-center"><div class="loader mb-2"></div> <span class="text-sm text-orange-500">Conectando...</span></div>
+                            <button onclick="startAudioGuide('${safeTitle}')" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-full flex items-center gap-2 transition shadow-lg"><i data-lucide="play" class="w-5 h-5"></i> <span>Escuchar</span></button>
+                            <div id="audio-loading" class="hidden mt-6 flex flex-col items-center"><div class="loader mb-2"></div> <span class="text-sm text-orange-500">Cargando...</span></div>
                             <div id="audio-controls" class="hidden mt-6 w-full max-w-md bg-slate-100 p-4 rounded-xl border border-slate-200">
                                 <div class="flex items-center justify-center gap-4 mb-3"><div class="audio-wave"><div class="audio-bar"></div><div class="audio-bar"></div><div class="audio-bar"></div><div class="audio-bar"></div><div class="audio-bar"></div></div><span class="text-orange-600 font-bold text-sm">REPRODUCIENDO</span></div>
                                 <p id="audio-text-display" class="text-sm text-slate-600 italic leading-relaxed"></p>
-                                <button onclick="window.speechSynthesis.cancel(); document.getElementById('audio-controls').classList.add('hidden');" class="mt-3 text-xs text-red-500 underline hover:text-red-700">Detener Audio</button>
+                                <button onclick="window.speechSynthesis.cancel(); document.getElementById('audio-controls').classList.add('hidden');" class="mt-3 text-xs text-red-500 underline hover:text-red-700">Detener</button>
                             </div>
-                            <p id="audio-error" class="hidden mt-4 text-amber-600 text-sm font-semibold bg-amber-50 p-2 rounded"></p>
                         </div>`;
                     break;
                 case 'text':
-                    titleEl.innerHTML = `Guía Histórica IA ✨`;
+                    titleEl.innerText = `Guía Histórica`;
                     contentEl.innerHTML = `
                         <div class="flex flex-col items-center justify-center p-4">
                             <p class="mb-4 text-center text-slate-600">Historia y curiosidades sobre ${currentPlace.title}.</p>
-                            <button onclick="generateTextGuide('${safeTitle}')" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-full flex items-center gap-2 transition shadow-lg mb-6"><i data-lucide="sparkles" class="w-5 h-5"></i> <span>Generar Historia</span></button>
+                            <button onclick="generateTextGuide('${safeTitle}')" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-full flex items-center gap-2 transition shadow-lg mb-6"><i data-lucide="sparkles" class="w-5 h-5"></i> <span>Leer Historia</span></button>
                             <div id="text-loading" class="hidden flex flex-col items-center mb-4"><div class="loader mb-2 border-purple-200" style="border-top-color: #9333ea;"></div><span class="text-sm text-purple-600">Escribiendo...</span></div>
                             <div id="text-result" class="text-left prose prose-slate max-w-none w-full bg-slate-50 p-6 rounded-xl hidden"></div>
                         </div>`;
                     break;
-                case 'video': titleEl.innerText = "Vídeo Explicativo"; contentEl.innerHTML = `<div class="aspect-video bg-black rounded-lg flex items-center justify-center text-white"><div class="text-center"><i data-lucide="play-circle" class="w-16 h-16 mx-auto opacity-80"></i><p class="mt-2">Reproducir vídeo</p></div></div>`; break;
-                case 'gallery': titleEl.innerText = "Galería de Fotos"; contentEl.innerHTML = `<div class="grid grid-cols-2 gap-2"><div class="h-32 bg-slate-200 rounded-lg overflow-hidden"><img src="${currentPlace.image}" class="w-full h-full object-cover"></div><div class="h-32 bg-slate-200 rounded-lg flex items-center justify-center text-slate-400">Foto 2</div></div>`; break;
+                case 'video': titleEl.innerText = "Vídeo"; contentEl.innerHTML = `<div class="aspect-video bg-black rounded-lg flex items-center justify-center text-white"><div class="text-center"><i data-lucide="play-circle" class="w-16 h-16 mx-auto opacity-80"></i><p class="mt-2">Reproducir vídeo</p></div></div>`; break;
+                case 'gallery': titleEl.innerText = "Galería"; contentEl.innerHTML = `<div class="grid grid-cols-2 gap-2"><div class="h-32 bg-slate-200 rounded-lg overflow-hidden"><img src="${currentPlace.image}" class="w-full h-full object-cover"></div><div class="h-32 bg-slate-200 rounded-lg flex items-center justify-center text-slate-400">Foto 2</div></div>`; break;
             }
             lucide.createIcons();
+        }
+
+        function setBadge(text, colorClass = "text-gray-500 bg-gray-100") {
+            const badge = document.getElementById('status-badge');
+            badge.innerText = text;
+            badge.className = `text-xs font-normal px-2 py-1 rounded-full ${colorClass}`;
+            badge.classList.remove('hidden');
         }
 
         async function startAudioGuide(placeName) {
             const loading = document.getElementById('audio-loading');
             const controls = document.getElementById('audio-controls');
             const textDisplay = document.getElementById('audio-text-display');
-            const errDiv = document.getElementById('audio-error');
             const btn = document.querySelector('#media-content button');
 
             if(speechSynth.speaking) speechSynth.cancel();
-            loading.classList.remove('hidden'); controls.classList.add('hidden'); errDiv.classList.add('hidden'); if(btn) btn.classList.add('hidden');
+            loading.classList.remove('hidden'); controls.classList.add('hidden'); if(btn) btn.classList.add('hidden');
 
             let textToRead = "";
+            let source = "IA";
 
             try {
                 const prompt = `Escribe un párrafo audioguía muy breve sobre "${placeName}" en Valencia. 40 palabras. Tono amigable.`;
                 textToRead = await fetchWithFallback(prompt);
-
+                setBadge("Generado por IA", "text-orange-600 bg-orange-100");
             } catch (error) {
-                console.log("Fallo total de IA, usando respaldo local.");
-                textToRead = backupContent[currentPlace.id] || "Lo sentimos, no hay información disponible en este momento.";
-                errDiv.innerText = "Modo Offline: Usando guía guardada por problemas de conexión.";
-                errDiv.classList.remove('hidden');
+                // SILENT FAIL - NO ERROR MESSAGE
+                console.log("Usando backup local");
+                textToRead = backupContent[currentPlace.id] || "Información disponible en recepción.";
+                setBadge("Información Básica", "text-gray-500 bg-gray-100");
             }
 
             loading.classList.add('hidden');
@@ -299,6 +306,7 @@
             const loading = document.getElementById('text-loading');
             const resultDiv = document.getElementById('text-result');
             const btn = document.querySelector('#media-content button'); 
+            
             loading.classList.remove('hidden'); resultDiv.classList.add('hidden'); if(btn) btn.classList.add('hidden');
 
             try {
@@ -306,10 +314,12 @@
                 const text = await fetchWithFallback(prompt);
                 const cleanText = text.replace(/```html/g, '').replace(/```/g, '');
                 resultDiv.innerHTML = cleanText; 
+                setBadge("Generado por IA", "text-purple-600 bg-purple-100");
             } catch (error) { 
-                console.error("Fallo total:", error);
-                let backupText = backupContent[currentPlace.id] || "Información no disponible.";
-                resultDiv.innerHTML = `<div class="bg-amber-50 p-4 rounded-lg border border-amber-200 mb-4 text-sm text-amber-800">⚠️ <strong>Modo Offline:</strong> No pudimos conectar con la IA. Mostrando información guardada.</div><p>${backupText}</p>`;
+                // SILENT FAIL - NO ERROR MESSAGE
+                let backupText = backupContent[currentPlace.id] || "Información disponible en recepción.";
+                resultDiv.innerHTML = `<p>${backupText}</p>`;
+                setBadge("Información Básica", "text-gray-500 bg-gray-100");
             } finally { 
                 loading.classList.add('hidden'); resultDiv.classList.remove('hidden'); 
             }
