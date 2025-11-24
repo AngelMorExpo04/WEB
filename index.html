@@ -6,7 +6,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veus de Ciutat - Valencia (v7.3)</title>
+    <title>Veus de Ciutat - Valencia (v7.4)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -53,14 +53,14 @@
             <!-- GRUPO LOGO + TÍTULO -->
             <div class="flex items-center gap-4 cursor-pointer" onclick="navigate('home')">
                 <!-- 
-                    AQUÍ ESTÁ EL CAMBIO DEL LOGO:
-                    He cambiado 'h-12' (48px) por 'h-20' (80px).
-                    Opciones: h-16 (64px), h-20 (80px), h-24 (96px)
+                    CAMBIO IMPORTANTE:
+                    Ahora busca en 'img/logo-header.png'.
+                    Si no lo encuentra, muestra un recuadro que dice "LOGO".
                 -->
-                <img src="logo-header.png" 
+                <img src="img/logo-header.png" 
                      alt="Logo" 
                      class="h-20 w-auto object-contain drop-shadow-sm" 
-                     onerror="this.style.display='none'">
+                     onerror="this.onerror=null; this.src='https://placehold.co/100x100/bae6fd/0c4a6e?text=LOGO';">
                 
                 <h1 class="text-xl md:text-3xl font-bold tracking-wider leading-tight">
                     VEUS DE<br><span class="text-white/90">CIUTAT</span>
@@ -169,7 +169,7 @@
 
     </main>
 
-    <footer class="bg-slate-900 text-slate-400 py-6 mt-auto text-center text-sm"><p>&copy; 2024 Veus de Ciutat (v7.3)</p></footer>
+    <footer class="bg-slate-900 text-slate-400 py-6 mt-auto text-center text-sm"><p>&copy; 2024 Veus de Ciutat (v7.4)</p></footer>
 
     <script>
         const rawKey = "AIzaSyB8Nvs8yLBY2PJHrJtWCf6uSRdCqUbc2Co";
@@ -247,7 +247,7 @@
             card.onclick = () => openPlaceDetail(place);
             const safeTitle = encodeURIComponent(place.title).replace(/'/g, '%27');
             
-            // AQUÍ ES DONDE CAMBIAMOS EL COLOR NARANJA (orange-500) POR AZUL PASTEL (sky-500)
+            // COLOR AZUL PASTEL EN LOS TEXTOS
             card.innerHTML = `
                 <div class="h-48 overflow-hidden bg-slate-200">
                     <img src="${place.image}" alt="${place.title}" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/600x400?text=${safeTitle}';">
