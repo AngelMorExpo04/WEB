@@ -6,7 +6,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veus de Ciutat - Valencia (v9.0)</title>
+    <title>Veus de Ciutat - Valencia (v9.1)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -52,7 +52,10 @@
         <div class="container mx-auto flex justify-between items-center">
             <!-- LOGO GRANDE -->
             <div class="flex items-center gap-4 cursor-pointer" onclick="navigate('home')">
-                <img src="logo-header.png" 
+                <!-- 
+                    CORREGIDO: Ruta 'img/logo-header.png' para que encuentre el archivo dentro de la carpeta.
+                -->
+                <img src="img/logo-header.png" 
                      alt="Logo" 
                      class="h-20 w-auto object-contain drop-shadow-sm" 
                      onerror="this.onerror=null; this.src='https://placehold.co/100x100/e0e7ff/1e1b4b?text=LOGO';">
@@ -165,7 +168,7 @@
 
     </main>
 
-    <footer class="bg-slate-900 text-slate-400 py-6 mt-auto text-center text-sm"><p>&copy; 2024 Veus de Ciutat (v9.0)</p></footer>
+    <footer class="bg-slate-900 text-slate-400 py-6 mt-auto text-center text-sm"><p>&copy; 2024 Veus de Ciutat (v9.1)</p></footer>
 
     <script>
         const rawKey = "AIzaSyB8Nvs8yLBY2PJHrJtWCf6uSRdCqUbc2Co";
