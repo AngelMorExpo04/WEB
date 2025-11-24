@@ -44,7 +44,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-2xl">
                 <button onclick="navigate('pois')" class="group relative overflow-hidden rounded-2xl h-48 shadow-xl transition-all hover:scale-105">
                     <div class="absolute inset-0 bg-orange-500 opacity-90 group-hover:bg-orange-600 transition"></div>
-                    <!-- FOTO DE PORTADA: Usamos la de Torres como ejemplo -->
+                    <!-- FOTO DE PORTADA: Asegúrate de que img/torres.jpg existe en tu carpeta -->
                     <img src="img/torres.jpg" class="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-50" alt="Valencia" onerror="this.src='https://placehold.co/600x400?text=Valencia'">
                     <div class="relative z-10 flex flex-col items-center justify-center h-full text-white">
                         <i data-lucide="map-pin" class="w-10 h-10 mb-2"></i>
@@ -126,16 +126,18 @@
     <footer class="bg-slate-900 text-slate-400 py-6 mt-auto text-center text-sm"><p>&copy; 2024 Veus de Ciutat. Powered by Gemini API.</p></footer>
 
     <script>
-        const apiKey = ""; 
+        // ⬇️⬇️⬇️ ¡IMPORTANTE! PEGA TU CLAVE DE GOOGLE AQUÍ ENTRE LAS COMILLAS ⬇️⬇️⬇️
+        const apiKey = "AIzaSyB8Nvs8yLBY2PJHrJtWCf6uSRdCqUbc2Co"; 
+        // ⬆️⬆️⬆️ EJEMPLO: const apiKey = "AIzaSyD......"; ⬆️⬆️⬆️
+
         lucide.createIcons();
 
-        // --- AQUI ESTAN TUS RUTAS LOCALES ---
-        // Asegúrate de que los nombres de archivo en la carpeta 'img' coinciden EXACTAMENTE con estos:
+        // --- DATOS DE LOS SITIOS (Rutas a tu carpeta img) ---
         const placesData = [
             {
                 id: 'torres',
                 title: 'Torres de Serranos',
-                image: 'img/torres.jpg', // Nombre del archivo en tu carpeta img
+                image: 'img/torres.jpg',
                 desc: 'Antigua puerta de la muralla medieval.'
             },
             {
@@ -279,10 +281,29 @@
             lucide.createIcons();
         }
 
+        function checkApiKey() {
+            if (!apiKey || apiKey === "") {
+                const msg = `<div class="p-4 bg-red-100 text-red-700 rounded-lg border border-red-300 text-center">
+                                <strong>¡Falta la API Key!</strong><br>
+                                Para que la IA funcione, edita el archivo index.html y pega tu clave de Google AI Studio en la línea: <code>const apiKey = "...";</code>
+                             </div>`;
+                return msg;
+            }
+            return null;
+        }
+
         async function generateTextGuide(placeName) {
-            const loading = document.getElementById('text-loading');
+            const errorMsg = checkApiKey();
             const resultDiv = document.getElementById('text-result');
             const btn = document.querySelector('#media-content button'); 
+            
+            if (errorMsg) {
+                resultDiv.innerHTML = errorMsg;
+                resultDiv.classList.remove('hidden');
+                return;
+            }
+
+            const loading = document.getElementById('text-loading');
             loading.classList.remove('hidden'); resultDiv.classList.add('hidden'); if(btn) btn.classList.add('hidden');
 
             try {
@@ -291,17 +312,33 @@
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
                 });
+                
+                if (!response.ok) throw new Error("Error API: " + response.status);
+
                 const data = await response.json();
                 const text = data.candidates[0].content.parts[0].text.replace(/```html/g, '').replace(/```/g, '');
                 resultDiv.innerHTML = text; resultDiv.classList.remove('hidden');
-            } catch (error) { console.error(error); resultDiv.innerHTML = `<p class="text-red-500">Error al conectar con la IA.</p>`; resultDiv.classList.remove('hidden'); if(btn) btn.classList.remove('hidden'); } 
+            } catch (error) { 
+                console.error(error); 
+                resultDiv.innerHTML = `<p class="text-red-500">Error al conectar con la IA. Verifica tu API Key.</p>`; 
+                resultDiv.classList.remove('hidden'); 
+                if(btn) btn.classList.remove('hidden'); 
+            } 
             finally { loading.classList.add('hidden'); }
         }
 
         async function generateAudioGuide(placeName) {
-            const loading = document.getElementById('audio-loading');
+            const errorMsg = checkApiKey();
             const resultDiv = document.getElementById('audio-result');
             const btn = document.querySelector('#media-content button');
+
+            if (errorMsg) {
+                resultDiv.innerHTML = errorMsg;
+                resultDiv.classList.remove('hidden');
+                return;
+            }
+
+            const loading = document.getElementById('audio-loading');
             loading.classList.remove('hidden'); resultDiv.classList.add('hidden'); if(btn) btn.classList.add('hidden');
 
             try {
@@ -329,7 +366,12 @@
                     resultDiv.innerHTML = `<p class="text-sm text-slate-500 mb-2 italic">"${textToRead}"</p><audio controls autoplay class="w-full"><source src="${audioUrl}" type="audio/wav"></audio>`;
                     resultDiv.classList.remove('hidden');
                 }
-            } catch (error) { console.error(error); resultDiv.innerHTML = `<p class="text-red-500">Error en el audio.</p>`; resultDiv.classList.remove('hidden'); if(btn) btn.classList.remove('hidden'); }
+            } catch (error) { 
+                console.error(error); 
+                resultDiv.innerHTML = `<p class="text-red-500">Error en el audio. Verifica tu API Key.</p>`; 
+                resultDiv.classList.remove('hidden'); 
+                if(btn) btn.classList.remove('hidden'); 
+            }
             finally { loading.classList.add('hidden'); }
         }
 
