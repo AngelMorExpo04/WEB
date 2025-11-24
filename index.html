@@ -21,6 +21,29 @@
             animation: spin 1s linear infinite; display: inline-block;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        /* Animación de ondas de audio */
+        .audio-wave {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 20px;
+            gap: 3px;
+        }
+        .audio-bar {
+            width: 4px;
+            background: #f97316;
+            animation: audio-wave 1s ease-in-out infinite;
+        }
+        .audio-bar:nth-child(2) { animation-delay: 0.1s; }
+        .audio-bar:nth-child(3) { animation-delay: 0.2s; }
+        .audio-bar:nth-child(4) { animation-delay: 0.3s; }
+        .audio-bar:nth-child(5) { animation-delay: 0.4s; }
+        
+        @keyframes audio-wave {
+            0%, 100% { height: 5px; }
+            50% { height: 20px; }
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
@@ -44,7 +67,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-2xl">
                 <button onclick="navigate('pois')" class="group relative overflow-hidden rounded-2xl h-48 shadow-xl transition-all hover:scale-105">
                     <div class="absolute inset-0 bg-orange-500 opacity-90 group-hover:bg-orange-600 transition"></div>
-                    <!-- FOTO DE PORTADA: Asegúrate de que img/torres.jpg existe en tu carpeta -->
+                    <!-- FOTO DE PORTADA -->
                     <img src="img/torres.jpg" class="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-50" alt="Valencia" onerror="this.src='https://placehold.co/600x400?text=Valencia'">
                     <div class="relative z-10 flex flex-col items-center justify-center h-full text-white">
                         <i data-lucide="map-pin" class="w-10 h-10 mb-2"></i>
@@ -126,9 +149,8 @@
     <footer class="bg-slate-900 text-slate-400 py-6 mt-auto text-center text-sm"><p>&copy; 2024 Veus de Ciutat. Powered by Gemini API.</p></footer>
 
     <script>
-        // ⬇️⬇️⬇️ ¡IMPORTANTE! PEGA TU CLAVE DE GOOGLE AQUÍ ENTRE LAS COMILLAS ⬇️⬇️⬇️
+        // TU CLAVE DE API YA PUESTA:
         const apiKey = "AIzaSyB8Nvs8yLBY2PJHrJtWCf6uSRdCqUbc2Co"; 
-        // ⬆️⬆️⬆️ EJEMPLO: const apiKey = "AIzaSyD......"; ⬆️⬆️⬆️
 
         lucide.createIcons();
 
@@ -173,8 +195,12 @@
         ];
 
         let currentPlace = null;
+        let speechSynth = window.speechSynthesis; // Variable para controlar la voz
 
         function navigate(sectionId) {
+            // Detener cualquier audio que esté sonando al cambiar de pantalla
+            if(speechSynth.speaking) speechSynth.cancel();
+            
             document.querySelectorAll('section').forEach(el => el.classList.add('hidden-section'));
             document.getElementById(sectionId).classList.remove('hidden-section');
             window.scrollTo(0,0);
@@ -215,6 +241,7 @@
                 this.src = `https://placehold.co/800x400?text=${safeTitle}`;
             };
             document.getElementById('media-display-area').classList.add('hidden');
+            if(speechSynth.speaking) speechSynth.cancel(); // Parar audio anterior
             navigate('detail');
         }
 
@@ -223,6 +250,9 @@
             const titleEl = document.getElementById('media-title');
             const contentEl = document.getElementById('media-content');
             
+            // Si cambiamos de pestaña, paramos el audio si estaba sonando
+            if(type !== 'audio' && speechSynth.speaking) speechSynth.cancel();
+
             displayArea.classList.remove('hidden');
             displayArea.classList.add('fade-in');
             contentEl.innerHTML = ''; 
@@ -231,30 +261,41 @@
 
             switch(type) {
                 case 'audio':
-                    titleEl.innerHTML = `Audioguía IA ✨ <span class="text-sm font-normal text-slate-400 ml-2">Generada por Gemini</span>`;
+                    titleEl.innerHTML = `Audioguía IA ✨ <span class="text-sm font-normal text-slate-400 ml-2">Narrado en vivo</span>`;
                     contentEl.innerHTML = `
                         <div class="flex flex-col items-center justify-center p-4 text-center">
-                            <p class="mb-4 text-slate-600">Genera una narración de voz única sobre ${currentPlace.title}.</p>
-                            <button onclick="generateAudioGuide('${safeTitle}')" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-full flex items-center gap-2 transition shadow-lg">
-                                <i data-lucide="sparkles" class="w-5 h-5"></i> <span>Crear Audioguía Ahora</span>
+                            <p class="mb-4 text-slate-600">La IA escribirá una audioguía sobre ${currentPlace.title} y tu dispositivo la leerá.</p>
+                            <button onclick="startAudioGuide('${safeTitle}')" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-full flex items-center gap-2 transition shadow-lg">
+                                <i data-lucide="play" class="w-5 h-5"></i> <span>Escuchar Guía</span>
                             </button>
-                            <div id="audio-loading" class="hidden mt-4 flex flex-col items-center">
-                                <div class="loader mb-2"></div> <span class="text-sm text-orange-500">La IA está grabando tu audioguía...</span>
+                            
+                            <div id="audio-loading" class="hidden mt-6 flex flex-col items-center">
+                                <div class="loader mb-2"></div> <span class="text-sm text-orange-500">Generando guion...</span>
                             </div>
-                            <div id="audio-result" class="mt-6 w-full max-w-md hidden"></div>
+
+                            <div id="audio-controls" class="hidden mt-6 w-full max-w-md bg-slate-100 p-4 rounded-xl border border-slate-200">
+                                <div class="flex items-center justify-center gap-4 mb-3">
+                                    <div class="audio-wave">
+                                        <div class="audio-bar"></div><div class="audio-bar"></div><div class="audio-bar"></div><div class="audio-bar"></div><div class="audio-bar"></div>
+                                    </div>
+                                    <span class="text-orange-600 font-bold text-sm">REPRODUCIENDO</span>
+                                </div>
+                                <p id="audio-text-display" class="text-sm text-slate-600 italic leading-relaxed"></p>
+                                <button onclick="window.speechSynthesis.cancel(); document.getElementById('audio-controls').classList.add('hidden');" class="mt-3 text-xs text-red-500 underline hover:text-red-700">Detener Audio</button>
+                            </div>
                         </div>`;
                     break;
                 case 'text':
-                    titleEl.innerHTML = `Guía Histórica IA ✨ <span class="text-sm font-normal text-slate-400 ml-2">Generada por Gemini</span>`;
+                    titleEl.innerHTML = `Guía Histórica IA ✨ <span class="text-sm font-normal text-slate-400 ml-2">Modelo Gemini 1.5</span>`;
                     contentEl.innerHTML = `
                         <div class="flex flex-col items-center justify-center p-4">
-                            <p class="mb-4 text-center text-slate-600">Obtén una historia detallada, curiosidades y consejos exclusivos sobre ${currentPlace.title}.</p>
+                            <p class="mb-4 text-center text-slate-600">Historia detallada y curiosidades sobre ${currentPlace.title}.</p>
                             <button onclick="generateTextGuide('${safeTitle}')" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-full flex items-center gap-2 transition shadow-lg mb-6">
-                                <i data-lucide="sparkles" class="w-5 h-5"></i> <span>Generar Historia Exclusiva</span>
+                                <i data-lucide="sparkles" class="w-5 h-5"></i> <span>Generar Historia</span>
                             </button>
                             <div id="text-loading" class="hidden flex flex-col items-center mb-4">
                                 <div class="loader mb-2 border-purple-200" style="border-top-color: #9333ea;"></div>
-                                <span class="text-sm text-purple-600">La IA está escribiendo...</span>
+                                <span class="text-sm text-purple-600">Escribiendo...</span>
                             </div>
                             <div id="text-result" class="text-left prose prose-slate max-w-none w-full bg-slate-50 p-6 rounded-xl hidden"></div>
                         </div>`;
@@ -281,35 +322,79 @@
             lucide.createIcons();
         }
 
-        function checkApiKey() {
-            if (!apiKey || apiKey === "") {
-                const msg = `<div class="p-4 bg-red-100 text-red-700 rounded-lg border border-red-300 text-center">
-                                <strong>¡Falta la API Key!</strong><br>
-                                Para que la IA funcione, edita el archivo index.html y pega tu clave de Google AI Studio en la línea: <code>const apiKey = "...";</code>
-                             </div>`;
-                return msg;
+        // --- FUNCIONES IA BLINDADAS (USANDO MODELO ESTÁNDAR 1.5) ---
+
+        async function startAudioGuide(placeName) {
+            const loading = document.getElementById('audio-loading');
+            const controls = document.getElementById('audio-controls');
+            const textDisplay = document.getElementById('audio-text-display');
+            const btn = document.querySelector('#media-content button');
+
+            if(speechSynth.speaking) speechSynth.cancel(); // Limpiar cola anterior
+
+            loading.classList.remove('hidden'); 
+            controls.classList.add('hidden');
+            if(btn) btn.classList.add('hidden');
+
+            try {
+                // 1. Pedir el TEXTO a Gemini (Modelo 1.5 Flash - Compatible con todas las claves)
+                const prompt = `Escribe un párrafo de audioguía corto, inspirador y acogedor sobre "${placeName}" en Valencia. Máximo 60 palabras. Texto plano sin markdown.`;
+                
+                // NOTA: Usamos 'gemini-1.5-flash' que es el modelo público estándar
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+
+                if (!response.ok) throw new Error("Error API: " + response.status);
+
+                const data = await response.json();
+                const textToRead = data.candidates[0].content.parts[0].text;
+
+                // 2. Leerlo con el navegador (Gratis, sin límites, sin errores de modelo)
+                const utterance = new SpeechSynthesisUtterance(textToRead);
+                utterance.lang = 'es-ES'; // Voz en español
+                utterance.rate = 1.0; // Velocidad normal
+                
+                // Eventos para la UI
+                utterance.onstart = () => {
+                    loading.classList.add('hidden');
+                    controls.classList.remove('hidden');
+                    textDisplay.innerText = `"${textToRead}"`;
+                };
+                
+                utterance.onend = () => {
+                    controls.classList.add('hidden');
+                    if(btn) btn.classList.remove('hidden');
+                };
+
+                speechSynth.speak(utterance);
+
+            } catch (error) {
+                console.error(error);
+                loading.classList.add('hidden');
+                alert("Hubo un problema de conexión con la IA. Por favor verifica tu clave o intenta de nuevo.");
+                if(btn) btn.classList.remove('hidden');
             }
-            return null;
         }
 
         async function generateTextGuide(placeName) {
-            const errorMsg = checkApiKey();
+            const loading = document.getElementById('text-loading');
             const resultDiv = document.getElementById('text-result');
             const btn = document.querySelector('#media-content button'); 
             
-            if (errorMsg) {
-                resultDiv.innerHTML = errorMsg;
-                resultDiv.classList.remove('hidden');
-                return;
-            }
-
-            const loading = document.getElementById('text-loading');
-            loading.classList.remove('hidden'); resultDiv.classList.add('hidden'); if(btn) btn.classList.add('hidden');
+            loading.classList.remove('hidden'); 
+            resultDiv.classList.add('hidden'); 
+            if(btn) btn.classList.add('hidden');
 
             try {
-                const prompt = `Actúa como un guía turístico experto de Valencia, España. Escribe una guía breve pero fascinante sobre "${placeName}". Usa formato HTML sencillo (usando <h3>, <p>, <ul>). Incluye: 1) Una introducción histórica breve. 2) Qué ver exactamente en el sitio. 3) Un dato curioso o "secreto" que pocos turistas conocen. El tono debe ser inspirador.`;
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                const prompt = `Actúa como guía experto. Escribe una guía breve, histórica y con curiosidades sobre "${placeName}" en Valencia. Usa HTML sencillo (h3, p, ul).`;
+                
+                // Usamos gemini-1.5-flash aquí también
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
                 });
                 
@@ -317,72 +402,18 @@
 
                 const data = await response.json();
                 const text = data.candidates[0].content.parts[0].text.replace(/```html/g, '').replace(/```/g, '');
-                resultDiv.innerHTML = text; resultDiv.classList.remove('hidden');
+                
+                resultDiv.innerHTML = text; 
+                resultDiv.classList.remove('hidden');
             } catch (error) { 
                 console.error(error); 
-                resultDiv.innerHTML = `<p class="text-red-500">Error al conectar con la IA. Verifica tu API Key.</p>`; 
+                resultDiv.innerHTML = `<p class="text-red-500">Error al conectar con la IA.</p>`; 
                 resultDiv.classList.remove('hidden'); 
                 if(btn) btn.classList.remove('hidden'); 
             } 
             finally { loading.classList.add('hidden'); }
         }
 
-        async function generateAudioGuide(placeName) {
-            const errorMsg = checkApiKey();
-            const resultDiv = document.getElementById('audio-result');
-            const btn = document.querySelector('#media-content button');
-
-            if (errorMsg) {
-                resultDiv.innerHTML = errorMsg;
-                resultDiv.classList.remove('hidden');
-                return;
-            }
-
-            const loading = document.getElementById('audio-loading');
-            loading.classList.remove('hidden'); resultDiv.classList.add('hidden'); if(btn) btn.classList.add('hidden');
-
-            try {
-                const textPrompt = `Eres un guía turístico amigable. Escribe un párrafo de introducción sobre "${placeName}" en Valencia, España, para ser leído en voz alta. Hazlo acogedor y breve (máximo 3 frases).`;
-                const textResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: textPrompt }] }] })
-                });
-                const textData = await textResponse.json();
-                const textToRead = textData.candidates[0].content.parts[0].text;
-                const ttsPayload = { contents: [{ parts: [{ text: textToRead }] }], generationConfig: { responseModalities: ["AUDIO"], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: "Puck" } } } }, model: "gemini-2.5-flash-preview-tts" };
-                const ttsResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`, {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(ttsPayload)
-                });
-                const ttsData = await ttsResponse.json();
-                if (ttsData.candidates && ttsData.candidates[0].content.parts[0].inlineData) {
-                    const base64Audio = ttsData.candidates[0].content.parts[0].inlineData.data;
-                    const binaryString = atob(base64Audio);
-                    const len = binaryString.length;
-                    const bytes = new Uint8Array(len);
-                    for (let i = 0; i < len; i++) { bytes[i] = binaryString.charCodeAt(i); }
-                    const wavBuffer = pcmToWav(bytes.buffer, 24000); 
-                    const blob = new Blob([wavBuffer], { type: 'audio/wav' });
-                    const audioUrl = URL.createObjectURL(blob);
-                    resultDiv.innerHTML = `<p class="text-sm text-slate-500 mb-2 italic">"${textToRead}"</p><audio controls autoplay class="w-full"><source src="${audioUrl}" type="audio/wav"></audio>`;
-                    resultDiv.classList.remove('hidden');
-                }
-            } catch (error) { 
-                console.error(error); 
-                resultDiv.innerHTML = `<p class="text-red-500">Error en el audio. Verifica tu API Key.</p>`; 
-                resultDiv.classList.remove('hidden'); 
-                if(btn) btn.classList.remove('hidden'); 
-            }
-            finally { loading.classList.add('hidden'); }
-        }
-
-        function pcmToWav(pcmData, sampleRate) {
-            const buffer = new ArrayBuffer(44 + pcmData.byteLength);
-            const view = new DataView(buffer);
-            writeString(view, 0, 'RIFF'); view.setUint32(4, 36 + pcmData.byteLength, true); writeString(view, 8, 'WAVE'); writeString(view, 12, 'fmt ');
-            view.setUint32(16, 16, true); view.setUint16(20, 1, true); view.setUint16(22, 1, true); view.setUint32(24, sampleRate, true); view.setUint32(28, sampleRate * 2, true); view.setUint16(32, 2, true); view.setUint16(34, 16, true); writeString(view, 36, 'data'); view.setUint32(40, pcmData.byteLength, true);
-            const pcmView = new Uint8Array(pcmData); const destination = new Uint8Array(buffer, 44); destination.set(pcmView); return buffer;
-        }
-        function writeString(view, offset, string) { for (let i = 0; i < string.length; i++) { view.setUint8(offset + i, string.charCodeAt(i)); } }
         window.addEventListener('load', () => { lucide.createIcons(); });
     </script>
 </body>
