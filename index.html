@@ -6,7 +6,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veus de Ciutat - Valencia (v7.2)</title>
+    <title>Veus de Ciutat - Valencia (v7.3)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -52,13 +52,17 @@
         <div class="container mx-auto flex justify-between items-center">
             <!-- GRUPO LOGO + TÍTULO -->
             <div class="flex items-center gap-4 cursor-pointer" onclick="navigate('home')">
-                <!-- Logo: Busca 'logo-header.png' en la raíz -->
+                <!-- 
+                    AQUÍ ESTÁ EL CAMBIO DEL LOGO:
+                    He cambiado 'h-12' (48px) por 'h-20' (80px).
+                    Opciones: h-16 (64px), h-20 (80px), h-24 (96px)
+                -->
                 <img src="logo-header.png" 
                      alt="Logo" 
-                     class="h-12 w-auto object-contain drop-shadow-sm" 
-                     onerror="this.style.display='none'"> <!-- Si falla, se oculta discretamente -->
+                     class="h-20 w-auto object-contain drop-shadow-sm" 
+                     onerror="this.style.display='none'">
                 
-                <h1 class="text-xl md:text-2xl font-bold tracking-wider leading-tight">
+                <h1 class="text-xl md:text-3xl font-bold tracking-wider leading-tight">
                     VEUS DE<br><span class="text-white/90">CIUTAT</span>
                 </h1>
             </div>
@@ -165,7 +169,7 @@
 
     </main>
 
-    <footer class="bg-slate-900 text-slate-400 py-6 mt-auto text-center text-sm"><p>&copy; 2024 Veus de Ciutat (v7.2)</p></footer>
+    <footer class="bg-slate-900 text-slate-400 py-6 mt-auto text-center text-sm"><p>&copy; 2024 Veus de Ciutat (v7.3)</p></footer>
 
     <script>
         const rawKey = "AIzaSyB8Nvs8yLBY2PJHrJtWCf6uSRdCqUbc2Co";
