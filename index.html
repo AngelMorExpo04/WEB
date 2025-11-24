@@ -6,7 +6,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veus de Ciutat - Valencia (v5.0)</title>
+    <title>Veus de Ciutat - Valencia (v6.0)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -35,6 +35,12 @@
         .audio-bar:nth-child(4) { animation-delay: 0.3s; }
         .audio-bar:nth-child(5) { animation-delay: 0.4s; }
         @keyframes audio-wave { 0%, 100% { height: 5px; } 50% { height: 20px; } }
+        
+        /* Estilos para el contenido HTML enriquecido */
+        .prose h3 { color: #ea580c; font-weight: 700; margin-top: 1.5em; margin-bottom: 0.5em; font-size: 1.25rem; }
+        .prose p { margin-bottom: 1em; line-height: 1.6; color: #4b5563; }
+        .prose ul { list-style-type: disc; padding-left: 1.5em; margin-bottom: 1em; color: #4b5563; }
+        .prose strong { color: #1f2937; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
@@ -133,14 +139,14 @@
                         <!-- Etiqueta de estado invisible por defecto -->
                         <span id="status-badge" class="text-xs font-normal px-2 py-1 bg-gray-100 rounded-full text-gray-500 hidden"></span>
                     </h3>
-                    <div id="media-content" class="text-slate-600"></div>
+                    <div id="media-content" class="text-slate-600 prose"></div>
                 </div>
             </div>
         </section>
 
     </main>
 
-    <footer class="bg-slate-900 text-slate-400 py-6 mt-auto text-center text-sm"><p>&copy; 2024 Veus de Ciutat (v5.0)</p></footer>
+    <footer class="bg-slate-900 text-slate-400 py-6 mt-auto text-center text-sm"><p>&copy; 2024 Veus de Ciutat (v6.0)</p></footer>
 
     <script>
         // --- CLAVE API ---
@@ -158,14 +164,100 @@
             { id: 'albufera', title: 'Parque Natural de la Albufera', image: 'img/albufera.jpg', desc: 'Naturaleza y origen de la paella.' }
         ];
 
-        // TEXTOS OFFLINE (Siempre disponibles)
+        // --- CONTENIDO DE RESPALDO ENRIQUECIDO (Modo Offline PRO) ---
+        // Ahora tenemos objetos separados para AUDIO y TEXTO
         const backupContent = {
-            'torres': "Las Torres de Serranos son una de las dos puertas fortificadas de la muralla medieval de Valencia que aún permanecen en pie. Fueron construidas por Pere Balaguer entre 1392 y 1398 en estilo gótico valenciano.",
-            'oceanografic': "El Oceanogràfic de Valencia es el mayor acuario de Europa. Situado en la Ciudad de las Artes y las Ciencias, representa los principales ecosistemas marinos del planeta.",
-            'mercado': "El Mercado Central de Valencia es una obra maestra del modernismo. Con su espectacular cúpula y vidrieras, es uno de los mercados de productos frescos más bonitos del mundo.",
-            'lonja': "La Lonja de la Seda es Patrimonio de la Humanidad por la UNESCO. Es una obra maestra del gótico civil, famosa por su Sala de Contratación y sus columnas helicoidales.",
-            'catedral': "La Catedral de Valencia, construida sobre una antigua mezquita, combina estilos románico, gótico y barroco. Es el hogar del Santo Cáliz y de la famosa torre del Miguelete.",
-            'albufera': "El Parque Natural de la Albufera es un humedal costero de gran valor ecológico. Es el lugar de nacimiento de la paella y ofrece paseos en barca inolvidables al atardecer."
+            'torres': {
+                audio: "¡Bienvenido a las Torres de Serranos! ¿Sabías que estas piedras han visto pasar reyes, presos y hasta obras de arte? Construidas en el siglo XIV por Pere Balaguer, fueron la entrada principal de Valencia. Pero guardan un secreto: durante la Guerra Civil, aquí se escondieron los cuadros más famosos del Museo del Prado, cubiertos de hormigón para salvarlos de las bombas. Hoy, tú puedes subir a lo más alto y disfrutar de la mejor vista de la ciudad.",
+                text: `
+                    <h3>Un gigante de piedra gótico</h3>
+                    <p>Las <strong>Torres de Serranos</strong> son uno de los monumentos mejor conservados de Valencia. Construidas entre <strong>1392 y 1398</strong> por el maestro Pere Balaguer, se inspiraron en otras puertas góticas de la época, como las de Génova.</p>
+                    <h3>De Entrada Real a Prisión</h3>
+                    <p>Originalmente, eran la entrada principal para los reyes y embajadores que venían del norte. Sin embargo, su historia tiene un lado oscuro: desde finales del siglo XVI hasta 1887, se utilizaron como <strong>prisión para nobles</strong>. De hecho, las condiciones eran algo más "cómodas" que en las cárceles comunes.</p>
+                    <h3>El secreto de la Guerra Civil</h3>
+                    <p>Un dato fascinante es su papel en la salvación del patrimonio español. Durante la Guerra Civil Española, las obras maestras del <strong>Museo del Prado</strong> (incluyendo Las Meninas de Velázquez) fueron evacuadas de Madrid y escondidas aquí. Se construyó una bóveda de hormigón armado dentro de las torres para protegerlas de los bombardeos.</p>
+                    <h3>Datos Curiosos:</h3>
+                    <ul>
+                        <li>Es el escenario de la "Crida", el acto donde la Fallera Mayor da inicio a las Fallas.</li>
+                        <li>Si te fijas, la parte trasera está abierta. Esto se hizo a propósito para que, si los enemigos tomaban la torre, no pudieran usarla como fortaleza contra la propia ciudad.</li>
+                    </ul>
+                `
+            },
+            'oceanografic': {
+                audio: "Estás frente al Oceanogràfic, el acuario más grande de toda Europa. No es solo un edificio bonito diseñado por Félix Candela, es una ciudad submarina completa. Aquí abajo viven 45.000 animales de 500 especies diferentes. Tienes desde belugas del Ártico hasta tiburones que nadarán justo por encima de tu cabeza en el túnel submarino. Es un homenaje a los mares y océanos de nuestro planeta.",
+                text: `
+                    <h3>Una ciudad bajo el mar</h3>
+                    <p>El <strong>Oceanogràfic</strong> es la joya de la Ciudad de las Artes y las Ciencias. Inaugurado en 2003, sus espectaculares edificios con forma de nenúfar fueron diseñados por el arquitecto <strong>Félix Candela</strong>.</p>
+                    <h3>Ecosistemas del mundo</h3>
+                    <p>No es un simple acuario, es un recorrido por los principales mares del planeta. Con más de <strong>42 millones de litros de agua</strong>, puedes visitar:</p>
+                    <ul>
+                        <li><strong>El Ártico:</strong> Un iglú gigante donde viven las famosas belugas.</li>
+                        <li><strong>El Túnel Submarino:</strong> Uno de los más largos de Europa, donde los tiburones y rayas pasan a escasos centímetros de ti.</li>
+                        <li><strong>Mar Rojo:</strong> Un auditorio con un acuario inmenso de fondo.</li>
+                    </ul>
+                    <h3>Conservación y Ciencia</h3>
+                    <p>Más allá del turismo, la Fundación Oceanogràfic realiza una labor vital en la recuperación de tortugas marinas heridas en la costa valenciana, curándolas y devolviéndolas al mar.</p>
+                `
+            },
+            'mercado': {
+                audio: "Bienvenido a la Catedral de los Sentidos. El Mercado Central de Valencia no es solo un sitio para comprar naranjas; es una obra maestra del modernismo. Mira hacia arriba: esa cúpula de 30 metros decorada con naranjas y cerámicas es el corazón del edificio. Se inauguró en 1928 y cuenta la leyenda que la cotorra que corona el edificio se pasa el día chismorreando con la del mercado vecino.",
+                text: `
+                    <h3>La Catedral del Producto Fresco</h3>
+                    <p>El <strong>Mercado Central de Valencia</strong> es uno de los mercados en funcionamiento más antiguos y grandes de Europa. Diseñado por los arquitectos <strong>Francesc Guàrdia i Vial y Alexandre Soler i March</strong>, se inauguró en 1928 tras más de una década de obras.</p>
+                    <h3>Arquitectura Modernista</h3>
+                    <p>El edificio es una combinación perfecta de hierro, cristal y cerámica. Destaca su gran cúpula central, que alcanza los <strong>30 metros de altura</strong>, permitiendo que la luz natural inunde el espacio y resalte los colores de las frutas y verduras.</p>
+                    <h3>La Leyenda de la Cotorra</h3>
+                    <p>En lo más alto del mercado hay una veleta con forma de cotorra, conocida como la <em>"Cotorra del Mercat"</em>. La leyenda popular dice que esta cotorra y la del cercano iglesia de los Santos Juanes ("Pardal de Sant Joan") se pasan el día comentando los chismes de la ciudad, simbolizando el bullicio típico del mercado.</p>
+                    <h3>Qué no te puedes perder:</h3>
+                    <ul>
+                        <li>Los puestos de salazones y anguilas vivas.</li>
+                        <li>La arquitectura de hierro inspirada en la Torre Eiffel.</li>
+                        <li>El mosaico de cerámica valenciana que decora la entrada.</li>
+                    </ul>
+                `
+            },
+            'lonja': {
+                audio: "Estás pisando un Patrimonio de la Humanidad. La Lonja de la Seda era el centro del poder económico en el Siglo de Oro valenciano. Lo más impresionante es la Sala de Contratación. Fíjate en sus columnas: parecen palmeras de piedra que suben hasta el techo estrellado. Y cuidado si miras a las gárgolas de fuera... ¡algunas tienen poses bastante atrevidas y traviesas!",
+                text: `
+                    <h3>El Templo del Comercio</h3>
+                    <p>La <strong>Lonja de la Seda</strong> (o de los Mercaderes) es una de las obras maestras del gótico civil en Europa. Fue declarada <strong>Patrimonio de la Humanidad por la UNESCO</strong> en 1996. Se construyó entre 1482 y 1548, reflejando la riqueza de la edad de oro valenciana.</p>
+                    <h3>El Salón de las Columnas</h3>
+                    <p>La sala principal, llamada <em>Sala de Contratación</em>, es famosa por sus 24 columnas helicoidales de 17 metros de altura. Se abren en la parte superior como si fueran palmeras de piedra, sosteniendo una bóveda que originalmente estaba pintada de azul con estrellas doradas, imitando el cielo.</p>
+                    <h3>El Consulado del Mar</h3>
+                    <p>Aquí se encontraba el primer tribunal de comercio marítimo de España. Una inscripción en latín recorre las paredes de la sala principal, recordando a los comerciantes que deben ser honestos en sus tratos: <em>"Probad y ved cuán bueno es el comercio que no usa el fraude..."</em>.</p>
+                    <h3>Curiosidades:</h3>
+                    <ul>
+                        <li><strong>Las Gárgolas:</strong> Si observas la fachada con atención, verás gárgolas con escenas satíricas y a veces obscenas, una crítica social de la época.</li>
+                        <li><strong>La Torre:</strong> Servía como cárcel para los comerciantes que no pagaban sus deudas.</li>
+                    </ul>
+                `
+            },
+            'catedral': {
+                audio: "Aquí se mezclan todos los estilos: románico, gótico y barroco. Pero lo que hace única a la Catedral de Valencia es lo que guarda dentro: el Santo Cáliz. Sí, el Vaticano reconoce que esta copa de ágata podría ser la que usó Jesucristo en la Última Cena. Y si te sientes con fuerzas, sube los 207 escalones del Miguelete. ¡Las vistas desde arriba valen cada paso!",
+                text: `
+                    <h3>Una Mezcla de Estilos Única</h3>
+                    <p>La <strong>Catedral de Santa María de Valencia</strong> se construyó sobre una antigua mezquita a partir del siglo XIII. Por eso, no tiene un solo estilo: su Puerta del Palau es románica, la de los Apóstoles es gótica y la de los Hierros es barroca.</p>
+                    <h3>El Santo Grial</h3>
+                    <p>En la Capilla del Santo Cáliz se custodia una de las reliquias más importantes de la cristiandad: una copa de ágata del siglo I a.C. que la tradición (y el respaldo de varios Papas) identifica como el <strong>Santo Grial</strong> utilizado en la Última Cena.</p>
+                    <h3>El Miguelete (El Micalet)</h3>
+                    <p>Es la torre campanario de la catedral. De estilo gótico, tiene 51 metros de altura. Su campana principal, llamada "Miquel", pesa más de 7.500 kilos y da nombre a la torre.</p>
+                    <h3>El Tribunal de las Aguas</h3>
+                    <p>Cada jueves a las 12:00, en la Puerta de los Apóstoles, se reúne este tribunal milenario (Patrimonio Inmaterial de la Humanidad) para resolver los conflictos de riego de la huerta valenciana, todo de forma oral y en valenciano.</p>
+                `
+            },
+            'albufera': {
+                audio: "Bienvenido al espejo del sol. La Albufera es un parque natural donde el agua dulce se encuentra con el mar. Aquí nació la paella, entre arrozales y barracas tradicionales. Si vienes al atardecer, verás una de las puestas de sol más bonitas de España. Es un oasis de paz a solo unos kilómetros de la ciudad.",
+                text: `
+                    <h3>Naturaleza en estado puro</h3>
+                    <p>El <strong>Parque Natural de la Albufera</strong> es una laguna costera de agua dulce separada del mar por una franja de dunas (la Dehesa). Es un humedal de importancia internacional para las aves migratorias.</p>
+                    <h3>La cuna de la Paella</h3>
+                    <p>Rodeada de arrozales, fue aquí donde los campesinos inventaron la paella valenciana original, utilizando los ingredientes que tenían a mano: arroz, pollo, conejo, pato y verduras de la huerta.</p>
+                    <h3>Paseos en barca y "Albuferencs"</h3>
+                    <p>La mejor forma de visitarla es en las barcas tradicionales ("albuferencs"). Durante el paseo, podrás ver las típicas <strong>barracas</strong>, casas tradicionales valencianas con techo de paja y caña en forma triangular.</p>
+                    <h3>Consejo de experto:</h3>
+                    <p>La "Hora Dorada" aquí es mágica. Los atardeceres de la Albufera son famosos por sus colores rojos y violetas reflejados en el agua tranquila.</p>
+                `
+            }
         };
 
         let currentPlace = null;
@@ -281,17 +373,20 @@
             loading.classList.remove('hidden'); controls.classList.add('hidden'); if(btn) btn.classList.add('hidden');
 
             let textToRead = "";
-            let source = "IA";
 
             try {
                 const prompt = `Escribe un párrafo audioguía muy breve sobre "${placeName}" en Valencia. 40 palabras. Tono amigable.`;
                 textToRead = await fetchWithFallback(prompt);
                 setBadge("Generado por IA", "text-orange-600 bg-orange-100");
             } catch (error) {
-                // SILENT FAIL - NO ERROR MESSAGE
-                console.log("Usando backup local");
-                textToRead = backupContent[currentPlace.id] || "Información disponible en recepción.";
-                setBadge("Información Básica", "text-gray-500 bg-gray-100");
+                console.log("Modo Offline activado");
+                // CARGAR CONTENIDO DE RESPALDO SI FALLA LA IA
+                if (backupContent[currentPlace.id] && backupContent[currentPlace.id].audio) {
+                    textToRead = backupContent[currentPlace.id].audio;
+                    setBadge("Guía Verificada", "text-green-600 bg-green-100");
+                } else {
+                    textToRead = "Información no disponible temporalmente.";
+                }
             }
 
             loading.classList.add('hidden');
@@ -316,10 +411,14 @@
                 resultDiv.innerHTML = cleanText; 
                 setBadge("Generado por IA", "text-purple-600 bg-purple-100");
             } catch (error) { 
-                // SILENT FAIL - NO ERROR MESSAGE
-                let backupText = backupContent[currentPlace.id] || "Información disponible en recepción.";
-                resultDiv.innerHTML = `<p>${backupText}</p>`;
-                setBadge("Información Básica", "text-gray-500 bg-gray-100");
+                console.log("Modo Offline activado");
+                // CARGAR CONTENIDO DE RESPALDO SI FALLA LA IA
+                if (backupContent[currentPlace.id] && backupContent[currentPlace.id].text) {
+                    resultDiv.innerHTML = backupContent[currentPlace.id].text;
+                    setBadge("Guía Verificada", "text-green-600 bg-green-100");
+                } else {
+                    resultDiv.innerHTML = "<p>Información no disponible temporalmente.</p>";
+                }
             } finally { 
                 loading.classList.add('hidden'); resultDiv.classList.remove('hidden'); 
             }
