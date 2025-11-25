@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veus de Ciutat - Valencia (v10.0)</title>
+    <title>Veus de Ciutat - Valencia (v10.1)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -142,13 +142,14 @@
 
     </main>
 
-    <footer class="bg-slate-900 text-slate-400 py-6 mt-auto text-center text-sm"><p>&copy; 2024 Veus de Ciutat (v10.0)</p></footer>
+    <footer class="bg-slate-900 text-slate-400 py-6 mt-auto text-center text-sm"><p>&copy; 2025 Veus de Ciutat</p></footer>
 
     <script>
         lucide.createIcons();
 
-        // --- NUEVOS PUNTOS DE INTERÉS ---
+        // --- PUNTOS DE INTERÉS ---
         const placesData = [
+            { id: 'plaza_virgen', title: 'Plaza de la Virgen y Catedral', image: 'img/plaza_virgen.jpg', desc: 'El corazón histórico y espiritual de Valencia.' },
             { id: 'lonja', title: 'La Lonja de la Seda', image: 'img/lonja.jpg', desc: 'Patrimonio de la Humanidad y templo del comercio.' },
             { id: 'mercado_colon', title: 'Mercado de Colón', image: 'img/mercado.jpg', desc: 'Joya del modernismo valenciano.' },
             { id: 'torres', title: 'Torres de Serranos', image: 'img/torres.jpg', desc: 'Antigua puerta de la muralla y prisión.' },
@@ -162,6 +163,30 @@
 
         // --- CONTENIDO 100% OFFLINE Y EXTENSO ---
         const siteContent = {
+            'plaza_virgen': {
+                audio: "Estás pisando el kilómetro cero de la historia de Valencia. Aquí mismo, hace más de dos mil años, los romanos fundaron Valentia sobre una isla del río Turia. Mira a tu alrededor: es un libro de historia abierto. Tienes la Basílica a un lado, el Palacio de la Generalitat al fondo y la imponente Catedral frente a ti. Esa fuente en el centro representa al río Turia y a sus acequias, el alma de la huerta valenciana. Y si miras la Puerta de los Apóstoles de la Catedral, imagina que es jueves a las 12 del mediodía: ahí se reúne el Tribunal de las Aguas desde hace mil años, juzgando los conflictos de riego sin papeles ni abogados, solo con la palabra. Entra en la Catedral y busca el Santo Cáliz, dicen que es el auténtico Grial. Y si tienes fuerzas, sube al Miguelete para ver Valencia a tus pies.",
+                text: `
+                    <h3>El Origen Romano: El Foro</h3>
+                    <p>La <strong>Plaza de la Virgen</strong> se asienta sobre el antiguo foro romano de la ciudad. Fue aquí donde, en el año 138 a.C., el cónsul Décimo Junio Bruto fundó <em>Valentia Edetanorum</em>. Todavía hoy, bajo el suelo del cercano museo de la Almoina, se pueden ver las ruinas de las primeras termas y calles de la ciudad.</p>
+                    
+                    <h3>La Catedral de Santa María</h3>
+                    <p>Construida sobre una antigua mezquita, que a su vez se alzó sobre una catedral visigoda y un templo romano, la <strong>Catedral de Valencia</strong> es un resumen perfecto de la historia arquitectónica de la ciudad. Comenzó a construirse en el siglo XIII y no se terminó hasta siglos después, por lo que tiene tres puertas de tres estilos distintos:</p>
+                    <ul>
+                        <li><strong>Puerta del Palau (Románica):</strong> La más antigua, con arcos de medio punto.</li>
+                        <li><strong>Puerta de los Apóstoles (Gótica):</strong> Donde se reúne el Tribunal de las Aguas.</li>
+                        <li><strong>Puerta de los Hierros (Barroca):</strong> La entrada principal actual, con una fachada cóncava única.</li>
+                    </ul>
+
+                    <h3>El Santo Cáliz y el Miguelete</h3>
+                    <p>En su interior, la Capilla del Santo Cáliz custodia una copa de ágata del siglo I que, según la tradición y estudios arqueológicos, es la candidata más firme a ser el <strong>Santo Grial</strong> de la Última Cena. Junto a la catedral se alza <strong>El Miguelete (El Micalet)</strong>, la torre campanario gótica de 51 metros de altura. Su campana mayor marca las horas de la ciudad desde hace siglos.</p>
+
+                    <h3>El Tribunal de las Aguas</h3>
+                    <p>Cada jueves a las 12:00 en punto, la Puerta de los Apóstoles acoge una tradición milenaria declarada Patrimonio Inmaterial de la Humanidad por la UNESCO: el <strong>Tribunal de las Aguas</strong>. Ocho síndicos, representantes de las acequias de la huerta, resuelven disputas de riego de forma oral y en valenciano, siendo la institución de justicia más antigua de Europa aún en funcionamiento.</p>
+
+                    <h3>La Fuente del Turia</h3>
+                    <p>En el centro de la plaza destaca la fuente alegórica. El hombre recostado representa al <strong>Río Turia</strong>, y las ocho mujeres que lo rodean con cántaros simbolizan las ocho acequias principales que riegan la huerta valenciana (Quart, Benàger i Faitanar, Tormos, Mislata, Mestalla, Favara, Rascanya y Rovella).</p>
+                `
+            },
             'lonja': {
                 audio: "¡Atención a las columnas! Parecen palmeras de piedra que suben hasta el cielo, ¿verdad? Estás en la Lonja de la Seda, donde se cerraban tratos millonarios con un simple apretón de manos. Pero no todo era honor: la torre que ves servía de cárcel para los mercaderes morosos. Y si te fijas bien en la fachada... verás gárgolas con posturas un tanto indecentes, una burla de los canteros a la estricta moral de la época.",
                 text: `
