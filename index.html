@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veus de Ciutat - Valencia </title>
+    <title>Veus de Ciutat - Valencia (v10.2)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -55,15 +55,16 @@
     <main class="container mx-auto p-4 flex-grow relative">
 
         <!-- HOME -->
-        <section id="home" class="fade-in flex flex-col items-center justify-center min-h-[60vh] gap-8">
+        <section id="home" class="fade-in flex flex-col items-center justify-center min-h-[60vh] gap-8 pb-12">
             <div class="text-center mb-8 mt-4">
-                <!-- AQUÍ SE HA AÑADIDO LA IMAGEN DEL MAPA -->
+                <!-- IMAGEN DEL MAPA -->
                 <img src="img/mapa.jpg" alt="Mapa de Valencia" class="max-w-xs mx-auto mb-6 drop-shadow-md" onerror="this.style.display='none'">
                 <h2 class="text-4xl font-extrabold text-slate-800 mb-2">Descubre Valencia</h2>
                 <p class="text-slate-500">Escucha, mira y siente la historia de la ciudad.</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-2xl">
+            <!-- AÑADIDO MARGEN INFERIOR (mb-12) PARA SEPARAR DE LA FOTO DE ABAJO -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-2xl mb-12">
                 <button onclick="navigate('pois')" class="group relative overflow-hidden rounded-2xl h-48 shadow-lg transition-all hover:scale-105 border-4 border-white cursor-pointer">
                     <div class="absolute inset-0 bg-indigo-400 opacity-90 group-hover:bg-indigo-500 transition"></div>
                     <img src="img/torres.jpg" class="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-50" alt="Valencia">
@@ -378,4 +379,3 @@
     </script>
 </body>
 </html>
-
